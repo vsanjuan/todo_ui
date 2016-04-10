@@ -3,8 +3,17 @@ from openerp import models, fields, api
 
 class Tag(models.Model):
 	_name = 'todo.task.tag'
+	_parent_store = True
+	# _parent_name = 'parent_id'
 	# name = fields.Char('Name',40,translate=True)
 	name = fields.Char('Name',size=40,translate=True)
+	parent_id = fields.Many2one(
+		'todo.task.tag','Parent Tag', ondelete='restrict'	
+		)
+	parent_left = fields.Integer('Parent Left', index=True)
+	parent_right = fields.Integer('Parent Right', index=True)
+	childs_ids = fields.One2many(
+		'todo.task.tag', 'parent_id', 'Child Tags')
 	task_ids = fields.Many2many('todo.task','Tasks')
 
 class Stage(models.Model):
