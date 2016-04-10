@@ -51,3 +51,32 @@ class TodoTask(models.Model):
 	_inherit = 'todo.task'
 	stage_id = fields.Many2one('todo.task.stage','Stage')
 	tags_id = fields.Many2many('todo.task.tag', string='Tags')
+	refers_to = fields.Reference([
+		('res.user','User'),
+		('res.partner','Partner'),
+		],'Refers to')
+
+	stage_fold = fields.Boolean(
+		'Stage Folded?',
+		compute = '_compute_stage_fold',
+		store = False, # the default
+		search ='_search_stage_fold',
+		inverse= '_write_stage_fold'
+		)
+
+	stage_state = fields.Selection(
+		related='stage_id.state',
+		string='Stage State'
+		)
+		
+	@api.one 
+	@api.depends('stage_id.fold')
+	def _compute_stage_fold(self):
+		self.stage_fold = self.stage_id_fold
+
+	def _search_stage_fold(self, operator, value):
+		return [('stage_id.fold',operator,value)]
+
+	def _write_stage_fold(self):
+		self.stage_id.fold = self.stage_fold
+
