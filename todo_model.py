@@ -64,7 +64,7 @@ class TodoTask(models.Model):
 			raise ValidationError('Must have 5 chars!')
 
 	stage_id = fields.Many2one('todo.task.stage','Stage')
-	tags_id = fields.Many2many('todo.task.tag', string='Tags')
+	tag_ids = fields.Many2many('todo.task.tag', string='Tags')
 	refers_to = fields.Reference([
 		('res.user','User'),
 		('res.partner','Partner'),
@@ -93,4 +93,12 @@ class TodoTask(models.Model):
 
 	def _write_stage_fold(self):
 		self.stage_id.fold = self.stage_fold
+
+	@api.one 
+	def compute_user_todo_count(self):
+		self.user_todo_count = self.search_count(
+			[('user_id','=',self.user_id.id)])
+
+	user_todo_count = fields.Integer('User To-Do Cont',
+		compute='compute_user_todo_count')
 

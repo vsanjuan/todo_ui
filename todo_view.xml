@@ -30,6 +30,28 @@
 								<field name="user_id" class="oe_inline" />
 							</h3>
 						</div>
+						<div name="buttons" class="oe_right oe_button_box">
+							<button class="oe_stat_button"
+								type="action" icon="fa-tasks"
+								name="%(todo_app.action_todo_task)d"
+								string=""
+								context="{'search_default_user_id':user_id,
+										   'default_user_id':user_id}"
+								help="Other to-dos for this user">
+								<field string="To-dos" name="user_todo_count"
+									widget="statinfo"/>
+							</button>
+						</div>
+						<group name="group_top">
+							<group name="group_left">
+								<field name="date_deadline"/>
+								<separator string="Reference" />
+								<field name="refers_to" />
+							</group>
+							<group name="group_right">
+								<field name="tag_ids" widget="many2many_tags"/>
+							</group>
+						</group>
 					</sheet>
 					<!-- History and communication -->
 					<div class ="oe_chatter">
@@ -53,6 +75,7 @@
 			res_model="todo.task" 
 			view_mode="tree,form,calendar,gantt,graph"
 			target="current" 
+			view_id="view_form_todo_task_ui"
 			context="{'default_user_id':uid}"
 			domain="[]" 
 			limit="80" />
