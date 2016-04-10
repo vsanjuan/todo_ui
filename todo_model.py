@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api
+from openerp.exceptions import ValidationError
 
 class Tag(models.Model):
 	_name = 'todo.task.tag'
@@ -49,6 +50,19 @@ class Stage(models.Model):
 
 class TodoTask(models.Model):
 	_inherit = 'todo.task'
+
+	_sql_constraints = [
+		( 'todo_task_name_uniq',
+ 		  'UNIQUE (name,user_id,active)',
+ 		  'Task title must be unique!'	
+			)]
+
+	@api.one
+	@api.constrains('name')
+	def _check_name_size(self):
+		if len(self.name) < 5:
+			raise ValidationError('Must have 5 chars!')
+
 	stage_id = fields.Many2one('todo.task.stage','Stage')
 	tags_id = fields.Many2many('todo.task.tag', string='Tags')
 	refers_to = fields.Reference([
