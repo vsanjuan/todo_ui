@@ -63,6 +63,8 @@ class TodoTask(models.Model):
 		if len(self.name) < 5:
 			raise ValidationError('Must have 5 chars!')
 
+
+	effort_estimate = fields.Integer('Effort Estimate')
 	stage_id = fields.Many2one('todo.task.stage','Stage')
 	tag_ids = fields.Many2many('todo.task.tag', string='Tags')
 	refers_to = fields.Reference([
